@@ -3,7 +3,6 @@ from tree import *
 sys.path.append("../advent-of-code")
 
 from filereader.filereader import getLinesInputFile
-from collections import deque
 
 inputList = getLinesInputFile("day7", "input.txt")
 

@@ -14,18 +14,7 @@ class Node:
     def __str__(self):
         return str(self.data)
 
-class Tree:
 
-    def __init__(self, root:Node):
-        self.root = root
-
-def readCDLS(contains:list, node:Node):
-    nodeList = []
-    for item in contains:
-        n = Node()
-        n.setData(item)
-        nodeList.append(n)
-    node.setChildren(nodeList)
 
 
     

@@ -1,0 +1,71 @@
+import sys
+sys.path.append("../advent-of-code")
+
+from filereader.filereader import getLinesInputFile
+inputList = getLinesInputFile("day8", "input.txt")
+
+matrix = []
+for line in inputList:
+    row = []
+    line = line.strip()
+    for col in line:
+        row.append(int(col))
+    matrix.append(row)
+
+
+def calcScenery(r:int, c:int, h:int, matrix = matrix):
+    #Check left
+    left = 0
+    cId = c - 1
+    while cId >= 0:
+        if h > matrix[r][cId]:
+            left += 1
+        else:
+            left +=1
+            break
+        cId -= 1
+    #Check Right
+    right = 0
+    cId = c + 1
+    while cId < len(matrix[r]):
+        if h > matrix[r][cId]:
+            right += 1
+        else:
+            right +=1
+            break
+        cId += 1
+    #Check Top
+    top = 0
+    rId = r - 1
+    while rId >= 0:
+        if h > matrix[rId][c]:
+            top += 1
+        else:
+            top +=1
+            break
+        rId -= 1
+    #Check Bottom
+    bottom = 0
+    rId = r + 1
+    while rId < len(matrix):
+        if h > matrix[rId][c]:
+            bottom += 1
+        else:
+            bottom +=1
+            break
+        rId += 1
+
+    return left*right*top*bottom
+
+bestScore = 0
+rIdx = 0
+for row in matrix:
+    cIdx = 0
+    for item in row:
+        score = calcScenery(rIdx, cIdx, item, matrix)
+        if score > bestScore:
+            bestScore = score
+        cIdx += 1
+    rIdx += 1
+
+print(bestScore)

@@ -1,0 +1,84 @@
+import sys
+sys.path.append("../advent-of-code")
+
+from filereader.filereader import getLinesInputFile
+inputList = getLinesInputFile("day8", "input.txt")
+
+matrix = []
+for line in inputList:
+    row = []
+    line = line.strip()
+    for col in line:
+        row.append(int(col))
+    matrix.append(row)
+
+print(matrix)
+
+
+
+
+visTrees = set()
+
+#LEFT
+tTree = -1
+r = 0
+while r < len(matrix):
+    c = 0
+    while c < len(matrix[0]):
+        h = matrix[r][c]
+        if h > tTree:
+            tTree = h
+            visTrees.add(str(r) + "," + str(c))
+        c += 1
+    tTree = -1
+    r += 1
+
+print(visTrees)
+print("\n")
+#RIGHT
+tTree = -1
+r = 0
+while r < len(matrix):
+    c = len(matrix[0]) - 1
+    while c >= 0:
+        h = matrix[r][c]
+        if h > tTree:
+            tTree = h
+            visTrees.add(str(r) + "," + str(c))
+        c -= 1
+    tTree = -1
+    r += 1
+
+#TOP
+tTree = -1
+c = 0
+while c < len(matrix[0]):
+    r = 0
+    while r < len(matrix):
+        h = matrix[r][c]
+        if h > tTree:
+            tTree = h
+            visTrees.add(str(r) + "," + str(c))
+        r += 1
+    tTree = -1
+    c += 1
+
+tTree = -1
+c = 0
+#BOTTOM
+while c < len(matrix[0]):
+    r = len(matrix) - 1
+    while r >= 0:
+        h = matrix[r][c]
+        if h > tTree:
+            tTree = h
+            visTrees.add(str(r) + "," + str(c))
+        r -= 1
+    tTree = -1
+    c += 1
+
+#print(visTrees)
+print(len(visTrees))
+
+
+
