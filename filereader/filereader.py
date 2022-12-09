@@ -3,7 +3,10 @@ def getLinesInputFile(day, fileName):
     file = open(dir, "r")
     lines = file.readlines()
     file.close()
-    return lines
+    stripped_lines = []
+    for l in lines:
+        stripped_lines.append(l.strip())
+    return stripped_lines
     
 
 
