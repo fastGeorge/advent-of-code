@@ -19,13 +19,11 @@ for k in range(10):
     knots.append([s[0], s[1]])
 
 print(knots)
-#h = [s[0], s[1]]
-#t = [s[0], s[1]]
 
 def moveTail(h, t):
     difR = h[0] - t[0]
     difC = h[1] - t[1]
-    #check = True
+    
     if difR > 1:
         t[0] += 1
         if difC < 0:
@@ -38,14 +36,12 @@ def moveTail(h, t):
             t[1] -= 1
         elif difC > 0:
             t[1] +=1
-
     elif difC > 1:
         t[1] += 1
         if difR < 0:
             t[0] -= 1
         elif difR > 0:
-            t[0] +=1
-        
+            t[0] +=1   
     elif difC < -1:
         t[1] -= 1
         if difR < 0:
@@ -85,12 +81,12 @@ for line in inputList:
             h[0] -= 1
         elif split[0] == "D":
             h[0] += 1
-        clearMatrix()
+        #clearMatrix()
         for i in range(9):
             moveTail(knots[i], knots[i + 1])
             #matrix[knots[i][0]][knots[i][1]] = str(i)
         #printMatrix()
-        print("\n")    
+        #print("\n")    
         tSet.add(str(knots[9][0]) + "," + str(knots[9][1]))
 
 
