@@ -45,7 +45,7 @@ for pair in sbPairs:
         s2 = p2[0]
         b2 = p2[1]
         dist2 = manDist(s2, b2)
-        if manDist(s, s2) <= dist + dist2:
+        if manDist(s, s2) <= dist + dist2 and s != s2:
             plt.plot([s[0], s2[0]], [s[1], s2[1]], 'black')
 
     
