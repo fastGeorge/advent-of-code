@@ -128,7 +128,6 @@ def sandPour2(grid:list):
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FFMpegWriter
 
 grid = getGrid()
 
@@ -164,7 +163,7 @@ plt.show()
 grains = 0
 while sandPour2(grid):
     grains += 1
-    if grains % 500 == 0:
+    if grains % 100 == 0:
         arr = np.array(nbrGrid(grid))
         pixel_plot.set_data(arr)
         fig.canvas.flush_events()
