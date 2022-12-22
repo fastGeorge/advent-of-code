@@ -58,6 +58,7 @@ def path(start:str, goal:str, map:dict):
                 heapq.heappush(pq, (gScore[neighbor], neighbor))
     return None
 
+valveCond = {}
 vString = ""
 dists = {}
 for valve in valves:
@@ -65,6 +66,7 @@ for valve in valves:
         continue
 
     dists[valve] = {}
+    valveCond[valve] = 1
     vString += valve + ","
 
     for target in valves:
@@ -73,63 +75,48 @@ for valve in valves:
         way, n = path(valve, target, tunnels)
         dists[valve][target] =  n
 
+valveCond["AA"] = 0
+vString = vString[:-1]
+vString = vString.replace("AA", "00")
 
-vString = vString[:-1].replace("AA", "00")
+openValve = {}
+
+for i, valve in enumerate(dists):
+    openValve[valve] = i
+
 
 cache = {}
 
-def recScore(current, mins, vString:str):
+    
+def recScore(current, mins, bitmask):
 
-    if (current, mins, vString) in cache:
-        return cache[(current, mins, vString)]
+    if (current, mins, bitmask) in cache:
+        return cache[(current, mins, bitmask)]
 
     bestScore = 0
-    for pos in vString.split(","):
-        if pos == "00" or pos == current:
-            continue
+    for pos in dists[current]:
 
+        #Shifts the 1 openValve[pos] steps to the left adding zeros after
+        bit = 1 << openValve[pos]
+
+        #if the 1 in bit alligns with a 1 in bitmask a nonzero result is given, 
+        # signalling that the valve is already open and should be skipped
+        if bit & bitmask != 0:
+            continue
 
         n = dists[current][pos]
 
         reMins = mins - n - 1
         if reMins <= 0:
             continue
+        
+        #Here it is registered in bitmask that the current valve has been opened
+        #  by adding a one to the bitmask at the location indicated in openValve[pos]
+        newBitmask = bit | bitmask
+        bestScore = max(bestScore, recScore(pos, reMins, newBitmask) + valves[pos] * reMins)
 
-        vCopy = vString.replace(pos, "00")
-        bestScore = max(bestScore, recScore(pos, reMins, vCopy) + valves[pos] * reMins)
-
-    cache[(current, mins, vString)] = bestScore
+    cache[(current, mins, bitmask)] = bestScore
     return bestScore
 
-
-print(recScore("AA", 30, vString))
-
-from itertools import combinations
-
-combList = []
-chList = vString.split(",")
-
-for n in range((len(chList) // 2)):
-    combList += list(combinations(chList, n + 1))
-
-print(combList)
-
-bestV = 0
-iter = 0
-for part in combList:
-    iter += 1
-    if iter % 1000 == 0:
-        print(iter)
-    elString = ""
-    youString = vString
-    for v in part:
-        elString += v + ","
-        youString = youString.replace(v, "00")
-    elString = elString[:-1]
-    bestV = max(bestV, recScore("AA", 26, elString) + recScore("AA", 26, youString))
-
-
-print(bestV)
-
-
-
+#Bitmask starts at 0 to indicate that all valves are closed
+print(recScore("AA", 30, 0))
