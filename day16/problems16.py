@@ -112,7 +112,6 @@ chList = vString.split(",")
 for n in range((len(chList) // 2)):
     combList += list(combinations(chList, n + 1))
 
-print(combList)
 
 bestV = 0
 iter = 0
