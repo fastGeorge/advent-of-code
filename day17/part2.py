@@ -18,7 +18,6 @@ winds = ""
 for line in inputList:
     winds += line
 
-print(winds)
 
 def getStart(shape):
     s = shapes[shape]
@@ -42,9 +41,8 @@ def getStart(shape):
     for c in range(len(start[0])):
         arr = start[:, c]
         arr = arr[::-1]
-        #print(arr)
+
         rowBot = np.argmax(arr>0)
-        #print(rowBot)
         if rowBot:
             botEd.append([len(arr) - 1 - rowBot, c])
 
@@ -144,22 +142,9 @@ def checkDown2(dim:tuple, edges:list, chamber):
 import matplotlib.pyplot as plt
 import copy as copy
 
-
-
-plt.ion()
-
-fig, ax = plt.subplots()
-
 chamber = np.zeros((2, 7), np.int8)
 chamber[0][0] = -1
 
-plot = plt.imshow(chamber, cmap='tab20', aspect="equal", vmin=0, vmax=2)
-plt.show()
-
-t0 = time.time()
-
-height = 0
-turns = 0
 shIdx = ["-", "+", "J", "|", "¤"]
 
 starts = {}
@@ -167,64 +152,69 @@ for s in shIdx:
     st, di, ed = getStart(s)
     starts[s] = st, di, ed
 
+cycledict = {}
 
 idx = 0
-while turns < 2800 + 2300:
-    shape = shIdx[turns % 5]
+idCheck = True
+
+add = 0
+height = 0
+turn = 0
+checkId = 0
+done = False
+L = 1000000000000
+print(len(winds))
+while turn < L:
+    print(turn)
+    shape = shIdx[turn % 5]
     start, dim, edges = starts[shape]
     start = np.copy(start)
     edges = copy.deepcopy(edges)
+
+    if idCheck:
+        cycledict[idx] = np.copy(chamber[:30]), (turn, height, shape)
+    else:
+        if idx in cycledict:
+            
+            #Might be faulty comparison but seems to work
+            if np.array_equal(cycledict[idx][0], chamber[:30]):
+                (oldT, oldH, oldSH) = cycledict[idx][1]
+                if oldSH == shape:
+                    dheight = height - oldH
+                    dt = turn - oldT
+
+                    cyc = (L - turn) // dt
+                    add += cyc * dheight
+                    turn += cyc * dt
+                    assert turn <= L
     
     if chamber[0][0] == -1:
         chamber = start
     else:
         chamber = np.concatenate((start, chamber), axis=0)
+
     inAir = True
     while inAir:
-        time.sleep(0.2)
-
         dim, edges = checkWind2(winds[idx], dim, edges, chamber)
 
-        plot.set_extent([0, 6, 0, len(chamber)])
-        plot.set_data(chamber)
-
-
-        fig.canvas.flush_events()
-
         dim, edges, inAir = checkDown2(dim, edges, chamber)
-
-
-        plot.set_data(chamber)
-        fig.canvas.flush_events()
 
         
         idx += 1
         if idx >= len(winds):
+            idCheck = False
             idx = 0
     
     top = np.argmax(chamber>0) // 7
 
     chamber = chamber[top:]
+    height = len(chamber)
 
-    botVal = 0
-    for i in range(7):
-        c = chamber[:, i]
-        b = np.argmax(c)
-        if b != 0 or c[0] == 2:
-            botVal = max(b, botVal)
-        else:
-            break
-    else:
-        height += len(chamber[botVal + 1:])
-        chamber = chamber[:botVal + 1]
+    turn += 1
 
-    turns += 1
 
-#print(chamber)
-print(height + len(chamber))
-print(time.time() - t0)
-#plt.ioff()
-#plt.show()
+
+print(height + add)
 
 
 
