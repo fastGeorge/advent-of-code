@@ -125,6 +125,8 @@ plt.ion()
 
 fig = plt.figure()
 
+
+
 pixel_plot = plt.imshow(np_grid, cmap='tab20b', vmin=0, vmax=4)
 
 plt.show()
